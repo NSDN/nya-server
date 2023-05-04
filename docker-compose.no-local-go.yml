@@ -1,0 +1,25 @@
+name: nyasama-server-no-local-go
+
+services:
+  nya-db:
+    container_name: nya-db
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker compose
+    shm_size: 128mb
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env.postgres
+    volumes:
+      - ./database/data:/varlib/postgresql/data
+
+  forum-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '10127:10127'
+    restart: always
+    depends_on:
+      - nya-db

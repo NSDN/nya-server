@@ -1,0 +1,15 @@
+name: nya-server-database-only
+
+services:
+  nya-db:
+    container_name: nya-db
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker compose
+    shm_size: 128mb
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env.postgres
+    volumes:
+      - ./database/data:/varlib/postgresql/data

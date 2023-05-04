@@ -1,0 +1,6 @@
+*example*
+
+# 忽略一切环境变量文件
+*.env*
+# 不忽略环境变量的 example 文件
+!.env.*.example
