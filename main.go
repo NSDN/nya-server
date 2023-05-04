@@ -1,8 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"github.com/NSDN/nya-server/router"
+)
 
 func main() {
-    fmt.Println("Hello, World!")
+	r := router.SetupRouter()
+	r.Run(":10127")
 }
-
