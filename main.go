@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/NSDN/nya-server/repositories"
-	"github.com/NSDN/nya-server/router"
+	"github.com/NSDN/nya-server/routes"
 	"github.com/NSDN/nya-server/utils"
 	"github.com/joho/godotenv"
 )
@@ -20,7 +20,7 @@ func init() {
 }
 
 func main() {
-	r := router.SetupRouter()
+	r := routes.SetupRouter()
 	repositories.SetupDatabase()
 
 	APPLICATION_PORT := "APPLICATION_PORT"
