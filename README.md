@@ -1,4 +1,30 @@
-# README
+# 喵玉殿新版论坛服务端
+
+开发文档：<https://root.nsdn.club/nya-develop-document/>
+
+## 启动项目
+
+### 下载依赖
+
+```shell
+go mod download
+```
+
+### 在 docker 中运行 MongoDB 容器（可选）
+
+\* 如果你使用本地安装的 MongoDB 可以不需要这一步
+
+```shell
+docker compose up --detach
+```
+
+### 运行项目
+
+\* 需要已经启动 MongoDB 了才能正常运行
+
+```shell
+go run .
+```
 
 ## 目录结构
 
