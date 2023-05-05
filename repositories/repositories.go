@@ -30,6 +30,17 @@ func SetupDatabase() {
 		log.Fatal(err)
 	}
 
+	// 结束时关闭连接
+	disconnect := func() {
+		err = client.Disconnect(context.Background())
+
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	defer disconnect()
+
 	// 检查连接是否成功
 	err = client.Ping(context.Background(), nil)
 
