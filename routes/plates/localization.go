@@ -11,7 +11,7 @@ import (
 
 	@param router 路由引擎实例
 */
-func registerChineseLocalizationPlateRoutes(router *gin.Engine) {
+func registerLocalizationPlateRoutes(router *gin.Engine) {
 	url := "/plate/chinese-localization"
 
 	router.GET(url, func(context *gin.Context) {
