@@ -7,5 +7,5 @@ import (
 
 func Register(router *gin.Engine) {
 	router.GET("/plates", plateControllers.GetPlateList)
-	registerChineseLocalizationPlateRoutes(router)
+	registerLocalizationPlateRoutes(router)
 }
