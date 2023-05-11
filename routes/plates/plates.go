@@ -10,6 +10,6 @@ func Register(router *gin.Engine) {
 	// 创建模版列表
 	controllers.InitPlateList()
 
-	router.POST("plates")
+	router.GET("/plates", controllers.GetPlateList)
 	registerLocalizationPlateRoutes(router)
 }
