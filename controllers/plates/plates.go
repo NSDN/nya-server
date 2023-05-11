@@ -3,32 +3,21 @@ package plates
 import (
 	"net/http"
 
-	platesModels "github.com/NSDN/nya-server/models/plates"
+	services "github.com/NSDN/nya-server/services/plates"
 	"github.com/gin-gonic/gin"
 )
 
+// 创建版块列表 - 控制器
+func InitPlateList() {
+	services.InitPlateList()
+}
+
+// 获取版块列表 - 控制器
 func GetPlateList(context *gin.Context) {
-	list := []platesModels.Plate{
-		{
-			ID:         0,
-			Name:       "喵玉汉化馆",
-			RouteName:  "localization",
-			NameColor:  "#fff",
-			Background: "https://static-event.benghuai.com/new_mihoyo_homepage/images/download/cg/origin/2020-10-22.jpg",
-			PageType:   platesModels.COMMIC,
-		},
-		{
-			ID:        1,
-			Name:      "喵玉咏唱组",
-			RouteName: "music",
-			PageType:  platesModels.ARTICLE,
-		},
-		{
-			ID:        2,
-			Name:      "魔女的茶会",
-			RouteName: "chat",
-			PageType:  platesModels.ARTICLE,
-		},
+	list, err := services.GetPlateList()
+
+	if err != nil {
+		context.AbortWithError(http.StatusInternalServerError, err)
 	}
 
 	context.JSON(http.StatusOK, list)

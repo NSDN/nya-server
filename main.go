@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
-	"os"
 
+	"github.com/NSDN/nya-server/configs"
 	"github.com/NSDN/nya-server/repositories"
 	"github.com/NSDN/nya-server/routes"
 	"github.com/NSDN/nya-server/utils"
@@ -20,15 +20,16 @@ func init() {
 }
 
 func main() {
+	// 连接数据库
+	disconnect := repositories.SetupDatabase()
+	// main 函数结束时关闭连接
+	defer disconnect()
+
+	// 初始化路由
 	r := routes.SetupRouter()
-	repositories.SetupDatabase()
 
-	APPLICATION_PORT := "APPLICATION_PORT"
-	port := os.Getenv(APPLICATION_PORT)
-
-	if port == "" {
-		log.Fatal(utils.Messages.ENVIRONMENT_ERROR_NEED_ONE(APPLICATION_PORT))
-	}
-
-	r.Run(port)
+	// 从环境变量从获取端口号
+	port := utils.GetENV(configs.ENV_APPLICATION_PORT)
+	// 启动程序
+	r.Run(":" + port)
 }
