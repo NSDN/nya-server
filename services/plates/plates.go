@@ -27,23 +27,24 @@ func InitPlateList() {
 			ID:         0,
 			Name:       "喵玉汉化馆",
 			RouteName:  "localization",
-			NameColor:  "#000",
-			Background: "https://i.imgur.com/1MO96Tdl.png",
+			Background: "https://i.imgur.com/ohQuzivl.jpg",
 			PageType:   models.COMMIC,
 		},
 
 		models.Plate{
-			ID:        1,
-			Name:      "喵玉咏唱组",
-			RouteName: "music",
-			PageType:  models.ARTICLE,
+			ID:         1,
+			Name:       "喵玉咏唱组",
+			RouteName:  "music",
+			Background: "https://i.imgur.com/IHo7tTyl.jpg",
+			PageType:   models.ARTICLE,
 		},
 
 		models.Plate{
-			ID:        2,
-			Name:      "魔女的茶会",
-			RouteName: "chat",
-			PageType:  models.ARTICLE,
+			ID:         2,
+			Name:       "魔女的茶会",
+			RouteName:  "chat",
+			Background: "https://i.imgur.com/JsWkJ4jl.jpg",
+			PageType:   models.ARTICLE,
 		},
 	}
 
