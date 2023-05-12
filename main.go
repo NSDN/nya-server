@@ -11,8 +11,14 @@ import (
 )
 
 func init() {
-	// 从 .env 文件中加载环境变量
-	err := godotenv.Load()
+	// 设置日志输出前缀为日期及简短文件信息
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	// 从环境变量文件中加载环境变量
+	err := godotenv.Load(
+		configs.ENV_FILE,
+		configs.ENV_FILE_DATABASE,
+	)
 
 	if err != nil {
 		log.Fatal(utils.Messages.ENVIRONMENT_ERROR_NOT_FOUND)

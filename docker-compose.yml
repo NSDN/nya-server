@@ -6,9 +6,8 @@ services:
     ports:
       - "27017:27017"
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: passw0rd
+    env_file:
+      - .env.database
     volumes: 
       - miaoyudian-db:/data/db
 
