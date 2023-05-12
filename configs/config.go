@@ -1,10 +1,11 @@
 package configs
 
+// 环境变量
 const (
 	// 环境变量文件名
 	ENV_FILE = ".env"
-	// 数据库环境变量文件名
-	ENV_FILE_DATABASE = ".env.database"
+	// MongoDB 环境变量文件名
+	ENV_FILE_MONGODB = ".env.mongodb"
 
 	// 程序启动端口
 	ENV_APPLICATION_PORT = "APPLICATION_PORT"
@@ -17,6 +18,7 @@ const (
 	ENV_MONGODB_PASSWORD = "MONGO_INITDB_ROOT_PASSWORD"
 )
 
+// 数据库
 const (
 	// 数据库名称
 	DATABASE_NAME = "miaoYuDian"
