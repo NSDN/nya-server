@@ -8,37 +8,6 @@
 - 希望自己生成环境变量文件请参考示例文件
 - 根据下文不同的启动方式需要设置不同的环境变量
 
-## 启动项目（本地无 Golang 环境）
-
-- 需要本地环境中有 docker
-- 这个命令会同时在 docker 中运行 MongoDB 容器和本论坛后端程序容器
-- 需要更改 `.env` 中的 `MONGODB_URI`
-
-```shell
-# 启动项目
-docker compose --file docker-comopse.no-local.go.yml up --detach
-
-# 关闭项目
-docker compose --file docker-compose.no-local-go.yml down
-```
-
-### 查看 docker 中的论坛后端程序的目录
-
-```shell
-# 进入容器
-# 这个命令会在当前命令行打开一个 bash 进入容器
-docker compose exec forum-backend bash
-
-# 在容器内执行 linux 命令
-ls -la 
-```
-
-### 查看 docker 中的论坛后端程序的运行日志
-
-```shell
-docker compose logs forum-backend
-```
-
 ## 启动项目（本地有 Golang 环境）
 
 ### 下载依赖
@@ -59,12 +28,50 @@ go mod verify
 docker compose up --detach
 ```
 
+## 启动项目（本地无 Golang 环境）
+
+- 需要本地环境中有 docker
+- 这个命令会同时在 docker 中创建并运行 Golang 项目容器和 MongoDB 容器
+- 需要更改 `.env` 中的 `MONGODB_URI`
+
+```shell
+# 启动项目
+docker compose --file docker-comopse.no-local.go.yml up --detach
+
+# 关闭项目
+docker compose --file docker-compose.no-local-go.yml down
+```
+
+### 查看 docker 中的 Golang 项目目录
+
+```shell
+# 进入容器
+# 这个命令会在当前命令行打开一个 bash 进入容器
+docker compose exec forum-backend bash
+
+# 在容器内执行 linux 命令
+ls -la 
+```
+
+### 查看 docker 中的 Golagn 项目的运行日志
+
+```shell
+docker compose logs forum-backend
+```
+
 ### 运行项目
 
 \* 需要已经启动 MongoDB 了才能正常运行
 
 ```shell
 go run .
+```
+
+## 验证项目已正常启动
+
+```shell
+# 返回 pong 则表示启动成功
+curl -X GET 'http://localhost:10127/ping'
 ```
 
 ## 目录结构
