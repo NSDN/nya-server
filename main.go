@@ -17,7 +17,7 @@ func init() {
 	// 从环境变量文件中加载环境变量
 	err := godotenv.Load(
 		configs.ENV_FILE,
-		configs.ENV_FILE_DATABASE,
+		configs.ENV_FILE_MONGODB,
 	)
 
 	if err != nil {

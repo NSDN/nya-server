@@ -7,7 +7,7 @@ services:
       - "27017:27017"
     restart: always
     env_file:
-      - .env.database
+      - .env.mongodb
     volumes: 
       - miaoyudian-db:/data/db
 
