@@ -10,6 +10,16 @@ services:
       - .env.mongodb
     volumes: 
       - miaoyudian-db:/data/db
+  
+  forum-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "10127:10127"
+    restart: always
+    depends_on:
+      - mongodb
 
 volumes:
   miaoyudian-db:

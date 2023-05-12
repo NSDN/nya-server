@@ -2,22 +2,58 @@
 
 开发文档：<https://root.nsdn.club/nya-develop-document/>
 
-## 启动项目
+## 设置环境变量文件（重要！）
 
-### 设置环境变量文件（重要！）
-
-- 希望使用默认环境变量请将示例文件 `env.*.example` 中的 `example` 去掉
+- 希望使用默认环境变量请将示例文件 `.env.*.example` 中的 `example` 去掉
 - 希望自己生成环境变量文件请参考示例文件
+- 根据下文不同的启动方式需要设置不同的环境变量
+
+## 启动项目（本地无 Golang 环境）
+
+- 需要本地环境中有 docker
+- 这个命令会同时在 docker 中运行 MongoDB 容器和本论坛后端程序容器
+- 需要更改 `.env` 中的 `MONGODB_URI`
+
+```shell
+# 启动项目
+docker compose --file docker-comopse.no-local.go.yml up --detach
+
+# 关闭项目
+docker compose --file docker-compose.no-local-go.yml down
+```
+
+### 查看 docker 中的论坛后端程序的目录
+
+```shell
+# 进入容器
+# 这个命令会在当前命令行打开一个 bash 进入容器
+docker compose exec forum-backend bash
+
+# 在容器内执行 linux 命令
+ls -la 
+```
+
+### 查看 docker 中的论坛后端程序的运行日志
+
+```shell
+docker compose logs forum-backend
+```
+
+## 启动项目（本地有 Golang 环境）
 
 ### 下载依赖
 
 ```shell
+# 下载依赖
 go mod download
+# 验证依赖
+go mod verify
 ```
 
 ### 在 docker 中运行 MongoDB 容器（可选）
 
-\* 如果你使用本地安装的 MongoDB 可以不需要这一步
+- 如果你使用本地安装的 MongoDB 可以不需要这一步
+- 如果你使用本地安装的 MongoDB 记得修改 `.env` 文件中的 `MONGODB_URI`
 
 ```shell
 docker compose up --detach
