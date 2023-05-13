@@ -3,6 +3,7 @@ package plates
 import (
 	"log"
 
+	"github.com/NSDN/nya-server/constants"
 	models "github.com/NSDN/nya-server/models/plates"
 	repositories "github.com/NSDN/nya-server/repositories/plates"
 )
@@ -28,7 +29,7 @@ func InitPlateList() {
 			Name:       "喵玉汉化馆",
 			RouteName:  "localization",
 			Background: "https://i.imgur.com/ohQuzivl.jpg",
-			PageType:   models.COMMIC,
+			PageType:   constants.COMMIC,
 		},
 
 		models.Plate{
@@ -36,7 +37,7 @@ func InitPlateList() {
 			Name:       "喵玉咏唱组",
 			RouteName:  "music",
 			Background: "https://i.imgur.com/IHo7tTyl.jpg",
-			PageType:   models.ARTICLE,
+			PageType:   constants.ARTICLE,
 		},
 
 		models.Plate{
@@ -44,7 +45,7 @@ func InitPlateList() {
 			Name:       "魔女的茶会",
 			RouteName:  "chat",
 			Background: "https://i.imgur.com/JsWkJ4jl.jpg",
-			PageType:   models.ARTICLE,
+			PageType:   constants.ARTICLE,
 		},
 	}
 
