@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	services "github.com/NSDN/nya-server/services/plates"
+	"github.com/NSDN/nya-server/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +18,8 @@ func GetPlateList(context *gin.Context) {
 	list, err := services.GetPlateList()
 
 	if err != nil {
-		context.AbortWithError(http.StatusInternalServerError, err)
+		utils.HandleRequestError(context, http.StatusInternalServerError, err)
+		return
 	}
 
 	context.JSON(http.StatusOK, list)
