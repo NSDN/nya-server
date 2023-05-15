@@ -25,3 +25,11 @@ const (
 	// 版块列表集合
 	DB_COLLECTION_PLATES = "plates"
 )
+
+// 认证授权
+const (
+	// 密码哈希计算的成本，越高越安全但计算所需时间和资源越多，取值范围是 4 - 31。
+	BCRYPT_COST = 10
+	// 盐值长度
+	SALT_LENGTH = 16
+)
