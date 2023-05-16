@@ -1,11 +1,10 @@
-package plates
+package repositories
 
 import (
 	"context"
 
 	"github.com/NSDN/nya-server/configs"
-	models "github.com/NSDN/nya-server/models/plates"
-	"github.com/NSDN/nya-server/repositories"
+	"github.com/NSDN/nya-server/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -60,7 +59,7 @@ func GetPlateList() ([]models.Plate, error) {
 
 // 从数据库中获取版块列表集合
 func getPlatesCollection() *mongo.Collection {
-	client := repositories.Client
+	client := Client
 
 	return client.
 		Database(configs.DATABASE_NAME).

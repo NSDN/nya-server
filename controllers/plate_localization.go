@@ -1,4 +1,4 @@
-package plates
+package controllers
 
 import (
 	"net/http"

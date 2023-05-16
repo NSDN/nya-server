@@ -1,11 +1,11 @@
-package plates
+package services
 
 import (
 	"log"
 
 	"github.com/NSDN/nya-server/constants"
-	models "github.com/NSDN/nya-server/models/plates"
-	repositories "github.com/NSDN/nya-server/repositories/plates"
+	"github.com/NSDN/nya-server/models"
+	"github.com/NSDN/nya-server/repositories"
 )
 
 // 创建版块列表 - 服务

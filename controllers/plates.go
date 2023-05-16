@@ -1,9 +1,9 @@
-package plates
+package controllers
 
 import (
 	"net/http"
 
-	services "github.com/NSDN/nya-server/services/plates"
+	"github.com/NSDN/nya-server/services"
 	"github.com/NSDN/nya-server/utils"
 	"github.com/gin-gonic/gin"
 )
