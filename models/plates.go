@@ -1,4 +1,4 @@
-package plates
+package models
 
 import "github.com/NSDN/nya-server/constants"
 

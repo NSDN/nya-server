@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/NSDN/nya-server/middleware"
-	plateRoutes "github.com/NSDN/nya-server/routes/plates"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +18,7 @@ func SetupRouter() *gin.Engine {
 		context.String(http.StatusOK, "pong")
 	})
 
-	plateRoutes.Register(router)
+	registerPlatesRoutes(router)
 
 	return router
 }

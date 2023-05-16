@@ -1,4 +1,4 @@
-package plates
+package routes
 
 import (
 	"net/http"
@@ -6,11 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-/*
-@description 注册汉化区相关路由
-
-	@param router 路由引擎实例
-*/
+// 注册汉化区相关路由。
+// 应当在注册版块路由的函数中调用它并传入一个路由引擎实例。
 func registerLocalizationPlateRoutes(router *gin.Engine) {
 	url := "/plate/localization"
 
