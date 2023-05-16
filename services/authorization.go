@@ -25,17 +25,28 @@ func Login(info models.LoginInfo) error {
 	return err
 }
 
-// 使用前端传入的密码与经过 base64 编码的盐值生成哈希化的密码。
-func HashPassword(password string, base64Salt string) ([]byte, error) {
-	salt, err := base64.StdEncoding.DecodeString(base64Salt)
+// 使用密码（由前端传入）与盐值生成哈希化的密码。
+// 如果以字符串方式传入盐值，则必须是经过 base64 编码的盐值。
+func HashPassword[Salt []byte | string](password string, salt Salt) ([]byte, error) {
+	var byteSalt []byte
 
-	if err != nil {
-		return nil, err
+	switch any(salt).(type) {
+	case string:
+		decoded, err := base64.StdEncoding.DecodeString(string(salt))
+
+		if err != nil {
+			return nil, err
+		}
+
+		byteSalt = decoded
+
+	case []byte:
+		byteSalt = []byte(salt)
 	}
 
-	payload := append([]byte(password), salt...)
+	appended := append([]byte(password), byteSalt...)
 
-	return bcrypt.GenerateFromPassword(payload, configs.BCRYPT_COST)
+	return bcrypt.GenerateFromPassword(appended, configs.BCRYPT_COST)
 }
 
 // 比对密码。
