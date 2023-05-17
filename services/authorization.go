@@ -5,29 +5,44 @@ import (
 	"encoding/base64"
 	"errors"
 	"log"
+	"time"
 
 	"github.com/NSDN/nya-server/configs"
 	"github.com/NSDN/nya-server/models"
+	"github.com/NSDN/nya-server/utils"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // 使用前端传入的登入信息登入。
 // 通过比对登入信息中的密码与数据库中的密码是否一致来判断是否登入成功。
-func Login(info models.LoginInfo) error {
+// 成功时返回令牌。
+func Login(info models.LoginInfo) (token string, err error) {
 	user, err := GetUserInfo(info)
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	err = ComparePassword(info.Password, user.Password, user.Salt)
 
-	return err
+	if err != nil {
+		return "", err
+	}
+
+	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"username": user.Username,
+		"exp":      time.Now().Add(time.Hour * 24).Unix(),
+	})
+
+	var tokenKey = utils.GetENV(configs.ENV_TOKEN_KEY)
+
+	return rawToken.SignedString([]byte(tokenKey))
 }
 
 // 使用密码（由前端传入）与盐值生成哈希化的密码。
 // 如果以字符串方式传入盐值，则必须是经过 base64 编码的盐值。
-func HashPassword[Salt []byte | string](password string, salt Salt) ([]byte, error) {
+func HashPassword[Salt []byte | string](password string, salt Salt) (hashedPassword []byte, err error) {
 	var byteSalt []byte
 
 	switch any(salt).(type) {

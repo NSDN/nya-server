@@ -47,10 +47,12 @@ func Login(context *gin.Context) {
 	}
 
 	// 调用登入服务
-	if err := services.Login(info); err != nil {
+	token, err := services.Login(info)
+
+	if err != nil {
 		utils.HandleRequestError(context, http.StatusForbidden, err)
 		return
 	}
 
-	context.String(http.StatusOK, "called")
+	context.String(http.StatusOK, token)
 }
