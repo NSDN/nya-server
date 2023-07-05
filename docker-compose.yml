@@ -4,13 +4,13 @@ services:
   mongodb:
     image: mongo
     ports:
-      - "27017:27017"
+      - '27017:27017'
     restart: always
     env_file:
       - .env.mongodb
-    volumes: 
-      - miaoyudian-db:/data/db
+    volumes:
+      - nyasama-db:/data/db
 
 volumes:
-  miaoyudian-db:
+  nyasama-db:
     driver: local
