@@ -23,7 +23,7 @@ const (
 // 数据库
 const (
 	// 数据库名称
-	DATABASE_NAME = "miaoYuDian"
+	DATABASE_NAME = "nyasama"
 	// 版块列表集合
 	DB_COLLECTION_PLATES = "plates"
 )
