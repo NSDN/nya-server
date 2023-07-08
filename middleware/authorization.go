@@ -1,10 +1,8 @@
 package middleware
 
 import (
-	"errors"
 	"fmt"
 	"log"
-	"net/http"
 	"strings"
 
 	"github.com/NSDN/nya-server/configs"
@@ -27,7 +25,7 @@ func ValidateAuthorization(context *gin.Context) {
 	tokenString := getTokenHeader(authorization)
 
 	if tokenString == "" {
-		hanldeWrongToken(context)
+		context.Next()
 		return
 	}
 
@@ -39,7 +37,7 @@ func ValidateAuthorization(context *gin.Context) {
 		context.Next()
 	} else {
 		log.Println(err)
-		hanldeWrongToken(context)
+		utils.HandleWrongTokenError(context)
 	}
 }
 
@@ -67,15 +65,4 @@ func validateToken(tokenString string) (token *jwt.Token, err error) {
 		var tokenKey = utils.GetENV(configs.ENV_TOKEN_KEY)
 		return []byte(tokenKey), nil
 	})
-}
-
-// 处理错误令牌
-func hanldeWrongToken(context *gin.Context) {
-	utils.HandleRequestError(
-		context,
-		http.StatusUnauthorized,
-		errors.New(utils.Messages.AUTHORIZE_FAILED_WRONG_TOKEN),
-	)
-
-	context.Abort()
 }
