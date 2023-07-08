@@ -14,11 +14,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var FACK_SALT = "qwer1234"
+var FACK_PASSWORD = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
+
 // 使用前端传入的登入信息登入。
 // 通过比对登入信息中的密码与数据库中的密码是否一致来判断是否登入成功。
 // 成功时返回令牌。
 func Login(info models.LoginInfo) (token string, err error) {
-	user, err := GetUserInfo(info)
+	user, err := GetUserAuthorizateInfo(info)
 
 	if err != nil {
 		return "", err
@@ -31,8 +34,8 @@ func Login(info models.LoginInfo) (token string, err error) {
 	}
 
 	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": user.Username,
-		"exp":      time.Now().Add(time.Hour * 24).Unix(),
+		"uid": user.UID,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	})
 
 	var tokenKey = utils.GetENV(configs.ENV_TOKEN_KEY)
@@ -110,4 +113,54 @@ func GenerateBase64Salt() (string, error) {
 	result := base64.StdEncoding.EncodeToString(salt)
 
 	return result, nil
+}
+
+// 从数据库中获取用户
+func GetUserAuthorizateInfo(loginInfo models.LoginInfo) (*models.UserAuthorizateInfo, error) {
+	// FIXME: 实装从数据库中获取用户列表
+	base64Password, base64Salt := getFackPassword()
+
+	if base64Password == "" || base64Salt == "" {
+		return nil, errors.New("生成假数据失败")
+	}
+
+	users := []models.UserAuthorizateInfo{
+		{
+			UID:      "1001",
+			Username: "root",
+			Password: base64Password,
+			Salt:     base64Salt,
+		},
+	}
+
+	var target *models.UserAuthorizateInfo
+
+	for _, user := range users {
+
+		if user.Username == loginInfo.Username {
+			target = &user
+			break
+		}
+	}
+
+	if target == nil {
+		return nil, errors.New(utils.Messages.AUTHORIZE_FAILED_NO_USER)
+	}
+
+	return target, nil
+}
+
+// 生成假密码
+func getFackPassword() (string, string) {
+	base64Salt := base64.StdEncoding.EncodeToString([]byte(FACK_SALT))
+	hashed, err := HashPassword(FACK_PASSWORD, base64Salt)
+
+	if err != nil {
+		log.Println(err)
+		return "", ""
+	}
+
+	base64Password := base64.StdEncoding.EncodeToString(hashed)
+
+	return base64Password, base64Salt
 }

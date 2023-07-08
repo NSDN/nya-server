@@ -12,6 +12,7 @@ func SetupRouter() *gin.Engine {
 	router := gin.Default()
 
 	router.Use(middleware.CORS())
+	router.Use(middleware.ValidateAuthorization)
 
 	// HTTP 连接测试 API
 	router.GET("/ping", func(context *gin.Context) {

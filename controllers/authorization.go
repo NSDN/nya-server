@@ -4,10 +4,12 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/NSDN/nya-server/configs"
 	"github.com/NSDN/nya-server/models"
 	"github.com/NSDN/nya-server/services"
 	"github.com/NSDN/nya-server/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // 登入 - 控制器
@@ -54,5 +56,29 @@ func Login(context *gin.Context) {
 		return
 	}
 
-	context.String(http.StatusOK, token)
+	context.JSON(http.StatusOK, models.Token{
+		AccessToken: token,
+	})
+}
+
+// 获取用户信息 - 控制器
+func GetUserInfo(context *gin.Context) {
+	claims, exist := context.Get(configs.CONTEXT_KEY_CLAIMS)
+
+	if !exist {
+		utils.HandleWrongTokenError(context)
+		return
+	}
+
+	uid := claims.(jwt.MapClaims)["uid"].(string)
+
+	// 调用用户信息
+	user, err := services.GetUserInfo(uid)
+
+	if err != nil {
+		utils.HandleRequestError(context, http.StatusForbidden, err)
+		return
+	}
+
+	context.JSON(http.StatusOK, user)
 }
