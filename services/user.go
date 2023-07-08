@@ -15,7 +15,7 @@ func GetUserInfo(uid string) (*models.User, error) {
 			Username:  "root",
 			Nickname:  "管理员",
 			UserGroup: "大喵玉",
-			Icon:      "https://i.pximg.net/img-original/img/2023/03/19/02/59/30/106345139_p0.jpg",
+			Icon:      "https://i.imgur.com/nNiq3Ph.jpg",
 		},
 	}
 
