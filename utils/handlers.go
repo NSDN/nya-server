@@ -8,6 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 打印样品信息
+func HandlePrintExample(payload ...any) {
+	log.Println(payload...)
+}
+
 // 处理请求产生的错误。应当在控制器中调用。
 // 封装的是在向客户端返回错误的同时将错误信息打印在服务端的功能。
 // 注意此函数不会中断后续请求，如有需要中断请求，请在外部手动执行。
