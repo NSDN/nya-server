@@ -29,7 +29,7 @@ type CustomMessages struct {
 
 	// 缺少 <payload> 参数
 	AUTHORIZE_FAILED_MISSING_PARAMETER func(payload string) string
-	// 登入信息格式不正确
+	// 验证信息格式不正确
 	AUTHORIZE_FAILED_BAD_PARAMETER string
 	// 参数 <payload> 错误
 	AUTHORIZE_FAILED_WRONG_PARAMETER func(payload string) string
@@ -73,7 +73,7 @@ var Messages = CustomMessages{
 	},
 
 	AUTHORIZE_FAILED_BAD_PARAMETER: fmt.Sprintf(
-		"[%s] 登入信息格式不正确",
+		"[%s] 验证信息格式不正确",
 		messageType.AUTHORIZE_FAILED,
 	),
 

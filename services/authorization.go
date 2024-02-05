@@ -15,7 +15,12 @@ import (
 )
 
 var FACK_SALT = "qwer1234"
+
+// 明文：password
 var FACK_PASSWORD = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
+
+// 使用前端传入的注册信息注册。
+func Register(info models.RegisterInfo) {}
 
 // 使用前端传入的登入信息登入。
 // 通过比对登入信息中的密码与数据库中的密码是否一致来判断是否登入成功。
