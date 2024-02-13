@@ -59,9 +59,7 @@ func GetPlateList() ([]models.Plate, error) {
 
 // 从数据库中获取版块列表集合
 func getPlatesCollection() *mongo.Collection {
-	client := Client
-
-	return client.
+	return Client.
 		Database(configs.DATABASE_NAME).
 		Collection(configs.DB_COLLECTION_PLATES)
 }

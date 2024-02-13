@@ -11,8 +11,8 @@ import (
 )
 
 func init() {
-	// 设置日志输出前缀为日期及简短文件信息
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	// 设置日志输出前缀为日期及完整文件信息
+	log.SetFlags(log.LstdFlags | log.Llongfile)
 
 	// 从环境变量文件中加载环境变量
 	err := godotenv.Load(

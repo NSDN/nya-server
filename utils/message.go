@@ -39,6 +39,8 @@ type CustomMessages struct {
 	AUTHORIZE_FAILED_WRONG_PASSWORD string
 	// 错误的令牌
 	AUTHORIZE_FAILED_WRONG_TOKEN string
+	// 用户已存在
+	AUTHORIZE_FAILED_USER_EXIST string
 }
 
 // 自定义信息列表
@@ -97,6 +99,11 @@ var Messages = CustomMessages{
 
 	AUTHORIZE_FAILED_WRONG_TOKEN: fmt.Sprintf(
 		"[%s] 错误的令牌。",
+		messageType.AUTHORIZE_FAILED,
+	),
+
+	AUTHORIZE_FAILED_USER_EXIST: fmt.Sprintf(
+		"[%s] 用户已存在。",
 		messageType.AUTHORIZE_FAILED,
 	),
 }

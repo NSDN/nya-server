@@ -46,21 +46,26 @@ func Register(context *gin.Context) {
 		return
 	}
 
+	if info.Password != info.ConfirmPassword {
+		utils.HandleRequestError(
+			context,
+			http.StatusBadRequest,
+			errors.New(utils.Messages.AUTHORIZE_FAILED_WRONG_PASSWORD),
+		)
+
+		return
+	}
+
 	// 调用注册服务
-	token, err := services.Login(
-		models.LoginInfo{
-			Username: info.Username,
-			Password: info.Password,
-		},
-	)
+	succeed, err := services.Register(&info)
 
 	if err != nil {
 		utils.HandleRequestError(context, http.StatusForbidden, err)
 		return
 	}
 
-	context.JSON(http.StatusOK, models.Token{
-		AccessToken: token,
+	context.JSON(http.StatusOK, gin.H{
+		"success": succeed,
 	})
 }
 

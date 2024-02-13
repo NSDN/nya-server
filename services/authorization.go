@@ -5,22 +5,72 @@ import (
 	"encoding/base64"
 	"errors"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/NSDN/nya-server/configs"
 	"github.com/NSDN/nya-server/models"
+	"github.com/NSDN/nya-server/repositories"
 	"github.com/NSDN/nya-server/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
-var FACK_SALT = "qwer1234"
-
-// 明文：password
-var FACK_PASSWORD = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
-
 // 使用前端传入的注册信息注册。
-func Register(info models.RegisterInfo) {}
+func Register(info *models.RegisterInfo) (bool, error) {
+	_, err := GetUserAuthorizateInfo(models.LoginInfo{
+		Username: info.Username,
+	})
+
+	if err == nil {
+		// 如果查找用户没有报错，则说明用户已存在，不应新建
+		return false, errors.New(utils.Messages.AUTHORIZE_FAILED_USER_EXIST)
+	}
+
+	// 如果错误为找不到用户，则说明用户不存在，可以新建用户
+	noTarget := err.Error() == utils.Messages.AUTHORIZE_FAILED_NO_USER
+
+	if noTarget {
+		return createNewUser(info)
+	}
+
+	return false, err
+}
+
+// 创建新用户
+func createNewUser(info *models.RegisterInfo) (bool, error) {
+	// 基于用户数决定新用户的 UID
+	count, err := repositories.GetUserCount()
+
+	if err != nil {
+		return false, err
+	}
+
+	// 生成用户特定的随机盐值
+	salt, err := GenerateBase64Salt()
+
+	if err != nil {
+		return false, err
+	}
+
+	// 使用加密算法与盐值对明文密码加密
+	encryptedPassword, err := HashPassword(info.Password, salt)
+
+	if err != nil {
+		return false, err
+	}
+
+	newUser := models.UserFullInfo{
+		UID:      strconv.FormatInt(count+1, 10),
+		Username: info.Username,
+		Password: encryptedPassword,
+		Salt:     salt,
+	}
+
+	succeed, err := repositories.InsertNewUser(&newUser)
+
+	return succeed, err
+}
 
 // 使用前端传入的登入信息登入。
 // 通过比对登入信息中的密码与数据库中的密码是否一致来判断是否登入成功。
@@ -50,7 +100,7 @@ func Login(info models.LoginInfo) (token string, err error) {
 
 // 使用密码（由前端传入）与盐值生成哈希化的密码。
 // 如果以字符串方式传入盐值，则必须是经过 base64 编码的盐值。
-func HashPassword[Salt []byte | string](password string, salt Salt) (hashedPassword []byte, err error) {
+func HashPassword[Salt []byte | string](password string, salt Salt) (hashedPassword string, err error) {
 	var byteSalt []byte
 
 	switch any(salt).(type) {
@@ -58,7 +108,7 @@ func HashPassword[Salt []byte | string](password string, salt Salt) (hashedPassw
 		decoded, err := base64.StdEncoding.DecodeString(string(salt))
 
 		if err != nil {
-			return nil, err
+			return "", err
 		}
 
 		byteSalt = decoded
@@ -67,9 +117,20 @@ func HashPassword[Salt []byte | string](password string, salt Salt) (hashedPassw
 		byteSalt = []byte(salt)
 	}
 
-	appended := append([]byte(password), byteSalt...)
+	appended := append(
+		[]byte(password[:configs.PASSWORD_MAX_INDEX]),
+		byteSalt...,
+	)
 
-	return bcrypt.GenerateFromPassword(appended, configs.BCRYPT_COST)
+	hashed, err := bcrypt.GenerateFromPassword(appended, configs.BCRYPT_COST)
+
+	if err != nil {
+		return "", err
+	}
+
+	stringHashed := base64.StdEncoding.EncodeToString(hashed)
+
+	return stringHashed, nil
 }
 
 // 比对密码。
@@ -90,7 +151,10 @@ func ComparePassword(password string, base64Hashed string, base64Salt string) er
 	}
 
 	// 拼接传入密码与盐值
-	payload := append([]byte(password), salt...)
+	payload := append(
+		[]byte(password[:configs.PASSWORD_MAX_INDEX]),
+		salt...,
+	)
 
 	// 比对拼接结果与哈希后密码
 	err = bcrypt.CompareHashAndPassword(hashed, payload)
@@ -121,51 +185,12 @@ func GenerateBase64Salt() (string, error) {
 }
 
 // 从数据库中获取用户
-func GetUserAuthorizateInfo(loginInfo models.LoginInfo) (*models.UserAuthorizateInfo, error) {
-	// FIXME: 实装从数据库中获取用户列表
-	base64Password, base64Salt := getFackPassword()
+func GetUserAuthorizateInfo(loginInfo models.LoginInfo) (models.UserAuthorizateInfo, error) {
+	target, err := repositories.GetTargetAuthorizationInfo(loginInfo.Username)
 
-	if base64Password == "" || base64Salt == "" {
-		return nil, errors.New("生成假数据失败")
-	}
-
-	users := []models.UserAuthorizateInfo{
-		{
-			UID:      "1001",
-			Username: "root",
-			Password: base64Password,
-			Salt:     base64Salt,
-		},
-	}
-
-	var target *models.UserAuthorizateInfo
-
-	for _, user := range users {
-
-		if user.Username == loginInfo.Username {
-			target = &user
-			break
-		}
-	}
-
-	if target == nil {
-		return nil, errors.New(utils.Messages.AUTHORIZE_FAILED_NO_USER)
+	if err != nil {
+		return target, errors.New(utils.Messages.AUTHORIZE_FAILED_NO_USER)
 	}
 
 	return target, nil
-}
-
-// 生成假密码
-func getFackPassword() (string, string) {
-	base64Salt := base64.StdEncoding.EncodeToString([]byte(FACK_SALT))
-	hashed, err := HashPassword(FACK_PASSWORD, base64Salt)
-
-	if err != nil {
-		log.Println(err)
-		return "", ""
-	}
-
-	base64Password := base64.StdEncoding.EncodeToString(hashed)
-
-	return base64Password, base64Salt
 }
