@@ -37,7 +37,7 @@ const (
 	// 盐值长度
 	SALT_LENGTH = 16
 	// 密码最长下标
-	// 加密算法限制明文密码长度小于 73，而盐值占据 16，故密码下标设为最大 55
+	// 加密算法限制明文密码长度小于 72，而盐值占据 16，故密码下标设为最大 55
 	PASSWORD_MAX_INDEX = 55
 	// Authorization 认证方式
 	AUTHENTICATION_TYPE = "Bearer "

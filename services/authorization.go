@@ -54,7 +54,7 @@ func createNewUser(info *models.RegisterInfo) (bool, error) {
 	}
 
 	// 使用加密算法与盐值对明文密码加密
-	encryptedPassword, err := HashPassword(info.Password, salt)
+	encryptedPassword, err := encryptPassword(info.Password, salt)
 
 	if err != nil {
 		return false, err
@@ -100,7 +100,10 @@ func Login(info models.LoginInfo) (token string, err error) {
 
 // 使用密码（由前端传入）与盐值生成哈希化的密码。
 // 如果以字符串方式传入盐值，则必须是经过 base64 编码的盐值。
-func HashPassword[Salt []byte | string](password string, salt Salt) (hashedPassword string, err error) {
+func encryptPassword[Salt []byte | string](
+	password string,
+	salt Salt,
+) (encryptedPassword string, err error) {
 	var byteSalt []byte
 
 	switch any(salt).(type) {
