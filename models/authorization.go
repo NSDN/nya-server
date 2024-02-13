@@ -7,7 +7,7 @@ type RegisterInfo struct {
 	// 密码
 	Password string `json:"password" bson:"password"`
 	// 再次确认密码
-	ConfirmPassword string `json:"confirmPassword" bson:"password"`
+	ConfirmPassword string `json:"confirmPassword" bson:"confrimPassword"`
 }
 
 // 登入信息
@@ -21,11 +21,11 @@ type LoginInfo struct {
 // 用户验证信息
 type UserAuthorizateInfo struct {
 	// 用户编号
-	UID string
+	UID string `json:"uid" bson:"uid"`
 	// 用户名
-	Username string
+	Username string `json:"username" bson:"username"`
 	// 密码（明文哈希化后进行 Base64 编码后的值）
-	Password string
+	Password string `json:"password" bson:"password"`
 	// 盐值（明文 Base64 编码后的值）
-	Salt string
+	Salt string `json:"salt" bson:"salt"`
 }
