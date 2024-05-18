@@ -24,10 +24,12 @@ const (
 const (
 	// 数据库名称
 	DATABASE_NAME = "nyasama"
-	// 版块列表集合
-	DB_COLLECTION_PLATES = "plates"
 	// 用户列表集合
 	DB_COLLECTION_USERS = "users"
+	// 版块列表集合
+	DB_COLLECTION_PLATES = "plates"
+	// 帖文列表集合
+	DB_COLLECTION_ARTICLES = "articles"
 )
 
 // 认证授权

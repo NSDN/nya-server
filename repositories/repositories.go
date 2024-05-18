@@ -7,6 +7,7 @@ import (
 
 	"github.com/NSDN/nya-server/configs"
 	"github.com/NSDN/nya-server/utils"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -56,4 +57,56 @@ func SetupDatabase() func() {
 	fmt.Println(utils.Messages.CONNECT_SUCCESS(" MongoDB"))
 
 	return disconnect
+}
+
+// 插入列表数据进集合
+//
+// struct/any 皆不能作为 interface{} 类型传递，因此需要生成一遍 interface{} 类型的数据。
+func insertManyDataToCollection[T any](
+	collection *mongo.Collection,
+	data *[]T,
+) ([]interface{}, error) {
+	var payload []interface{}
+
+	for _, item := range *data {
+		payload = append(payload, item)
+	}
+
+	// 创建上下文
+	c := context.Background()
+	// 插入版块列表
+	result, err := collection.InsertMany(c, payload)
+	return result.InsertedIDs, err
+}
+
+// 从数据库中取出集合
+func getCollection(collection string) *mongo.Collection {
+	return Client.
+		Database(configs.DATABASE_NAME).
+		Collection(collection)
+}
+
+// 从数据库的集合中找出数据
+func findDataFromCollection[T any](model *T, collection *mongo.Collection) (*T, error) {
+	// 创建上下文
+	c := context.Background()
+
+	// 获取查询版块列表集合的游标
+	cursor, err := collection.Find(c, bson.D{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	// 函数结束时关闭游标
+	defer cursor.Close(c)
+
+	// 解码游标结果集至 plates 结构体
+	err = cursor.All(c, model)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return model, nil
 }
