@@ -33,3 +33,17 @@ func HandleWrongTokenError(context *gin.Context) {
 
 	context.Abort()
 }
+
+// 切片过滤函数
+// 用来实现类似 JavaScript 中的 Array.prototype.filter 函数的功能。
+func FilterSlice[T any](slice *[]T, predicate func(item *T, index int) bool) *[]T {
+	var result []T
+
+	for index, item := range *slice {
+		if predicate(&item, index) {
+			result = append(result, item)
+		}
+	}
+
+	return &result
+}

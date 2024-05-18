@@ -1,11 +1,8 @@
 package repositories
 
 import (
-	"context"
-
 	"github.com/NSDN/nya-server/configs"
 	"github.com/NSDN/nya-server/models"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -15,40 +12,16 @@ import (
 	@param plates models/plates > Plate
 	@returns _id[], err
 */
-func InitPlateList(plates []interface{}) ([]interface{}, error) {
-	// 从数据库中获取版块列表集合
+func InitPlateList(plates *[]models.Plate) ([]interface{}, error) {
 	collection := getPlatesCollection()
-
-	// 创建上下文
-	c := context.Background()
-	// 插入版块列表
-	result, err := collection.InsertMany(c, plates)
-
-	return result.InsertedIDs, err
+	return insertManyDataToCollection(collection, plates)
 }
 
 // 获取版块列表 - 数据库
-func GetPlateList() ([]models.Plate, error) {
+func GetPlateList() (*[]models.Plate, error) {
 	// 从数据库中获取版块列表集合
 	collection := getPlatesCollection()
-
-	// 创建上下文
-	c := context.Background()
-
-	// 获取查询版块列表集合的游标
-	cursor, err := collection.Find(c, bson.D{})
-
-	if err != nil {
-		return nil, err
-	}
-
-	// 函数结束时关闭游标
-	defer cursor.Close(c)
-
-	var plates []models.Plate
-
-	// 解码游标结果集至 plates 结构体
-	err = cursor.All(c, &plates)
+	plates, err := findDataFromCollection(&[]models.Plate{}, collection)
 
 	if err != nil {
 		return nil, err
@@ -59,7 +32,25 @@ func GetPlateList() ([]models.Plate, error) {
 
 // 从数据库中获取版块列表集合
 func getPlatesCollection() *mongo.Collection {
-	return Client.
-		Database(configs.DATABASE_NAME).
-		Collection(configs.DB_COLLECTION_PLATES)
+	return getCollection(configs.DB_COLLECTION_PLATES)
+}
+
+// TODO: 等创建文章功能完成后应删除此函数
+//
+// 生成假帖文列表 - 数据库
+func InitDummyArticles(articles *[]models.Article) ([]interface{}, error) {
+	collection := getCollection(configs.DB_COLLECTION_ARTICLES)
+	return insertManyDataToCollection(collection, articles)
+}
+
+// 获取帖文列表 - 数据库
+func GetArticles() (*[]models.Article, error) {
+	collection := getCollection(configs.DB_COLLECTION_ARTICLES)
+	articles, err := findDataFromCollection(&[]models.Article{}, collection)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return articles, nil
 }
