@@ -14,7 +14,7 @@ import (
 */
 func InitPlateList(plates *[]models.Plate) ([]interface{}, error) {
 	collection := getPlatesCollection()
-	return insertManyDataToCollection(collection, plates)
+	return insertManyToCollection(collection, plates)
 }
 
 // 获取版块列表 - 数据库
@@ -33,24 +33,4 @@ func GetPlateList() (*[]models.Plate, error) {
 // 从数据库中获取版块列表集合
 func getPlatesCollection() *mongo.Collection {
 	return getCollection(configs.DB_COLLECTION_PLATES)
-}
-
-// TODO: 等创建文章功能完成后应删除此函数
-//
-// 生成假帖文列表 - 数据库
-func InitDummyArticles(articles *[]models.Article) ([]interface{}, error) {
-	collection := getCollection(configs.DB_COLLECTION_ARTICLES)
-	return insertManyDataToCollection(collection, articles)
-}
-
-// 获取帖文列表 - 数据库
-func GetArticles() (*[]models.Article, error) {
-	collection := getCollection(configs.DB_COLLECTION_ARTICLES)
-	articles, err := findDataFromCollection(&[]models.Article{}, collection)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return articles, nil
 }

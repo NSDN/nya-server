@@ -64,9 +64,7 @@ func Register(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"success": succeed,
-	})
+	context.JSON(http.StatusOK, succeed)
 }
 
 // 登入 - 控制器

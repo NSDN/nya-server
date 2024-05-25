@@ -62,7 +62,7 @@ func SetupDatabase() func() {
 // 插入列表数据进集合
 //
 // struct/any 皆不能作为 interface{} 类型传递，因此需要生成一遍 interface{} 类型的数据。
-func insertManyDataToCollection[T any](
+func insertManyToCollection[T any](
 	collection *mongo.Collection,
 	data *[]T,
 ) ([]interface{}, error) {
@@ -79,7 +79,20 @@ func insertManyDataToCollection[T any](
 	return result.InsertedIDs, err
 }
 
+// 插入单条数据进集合
+func insertOneToCollection[T any](collection *mongo.Collection, data *T) (bool, error) {
+	_, err := collection.InsertOne(context.TODO(), data)
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
 // 从数据库中取出集合
+//
+//	collection 集合名
 func getCollection(collection string) *mongo.Collection {
 	return Client.
 		Database(configs.DATABASE_NAME).
@@ -91,7 +104,7 @@ func findDataFromCollection[T any](model *T, collection *mongo.Collection) (*T, 
 	// 创建上下文
 	c := context.Background()
 
-	// 获取查询版块列表集合的游标
+	// 获取集合的游标
 	cursor, err := collection.Find(c, bson.D{})
 
 	if err != nil {
@@ -101,7 +114,7 @@ func findDataFromCollection[T any](model *T, collection *mongo.Collection) (*T, 
 	// 函数结束时关闭游标
 	defer cursor.Close(c)
 
-	// 解码游标结果集至 plates 结构体
+	// 解码游标结果集至结构体
 	err = cursor.All(c, model)
 
 	if err != nil {

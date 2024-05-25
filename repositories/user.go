@@ -11,9 +11,7 @@ import (
 
 // 从数据库中获取用户列表集合
 func getUsersCollection() *mongo.Collection {
-	return Client.
-		Database(configs.DATABASE_NAME).
-		Collection(configs.DB_COLLECTION_USERS)
+	return getCollection(configs.DB_COLLECTION_USERS)
 }
 
 // 获取用户总数
@@ -25,11 +23,18 @@ func GetUserCount() (int64, error) {
 // 插入新用户
 func InsertNewUser(newUser *models.UserFullInfo) (bool, error) {
 	collection := getUsersCollection()
-	_, err := collection.InsertOne(context.TODO(), newUser)
+	return insertOneToCollection(collection, newUser)
+}
+
+// 获取用户列表 - 数据库
+func GetUserList() (*[]models.User, error) {
+	collection := getUsersCollection()
+
+	users, err := findDataFromCollection(&[]models.User{}, collection)
 
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	return true, nil
+	return users, nil
 }
