@@ -9,13 +9,17 @@ type MessageType struct {
 	CONNECT_SUCCESS string
 	// 认证失败
 	AUTHORIZE_FAILED string
+
+	// 创建帖子错误
+	TOPIC_CREATE_ERROR string
 }
 
 // 信息类型
 var messageType = MessageType{
-	ENVIRONMENT_ERROR: "环境变量错误",
-	CONNECT_SUCCESS:   "连接成功",
-	AUTHORIZE_FAILED:  "认证失败",
+	ENVIRONMENT_ERROR:  "环境变量错误",
+	CONNECT_SUCCESS:    "连接成功",
+	AUTHORIZE_FAILED:   "认证失败",
+	TOPIC_CREATE_ERROR: "创建帖子失败",
 }
 
 type CustomMessages struct {
@@ -41,6 +45,9 @@ type CustomMessages struct {
 	AUTHORIZE_FAILED_WRONG_TOKEN string
 	// 用户已存在
 	AUTHORIZE_FAILED_USER_EXIST string
+
+	// 文章内容不正确
+	ARTICLE_FAILED_BAD_CONTECT string
 }
 
 // 自定义信息列表
@@ -105,5 +112,10 @@ var Messages = CustomMessages{
 	AUTHORIZE_FAILED_USER_EXIST: fmt.Sprintf(
 		"[%s] 用户已存在。",
 		messageType.AUTHORIZE_FAILED,
+	),
+
+	ARTICLE_FAILED_BAD_CONTECT: fmt.Sprintf(
+		"[%s] 文章内容不正确",
+		messageType.TOPIC_CREATE_ERROR,
 	),
 }

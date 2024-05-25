@@ -4,24 +4,20 @@ import (
 	"errors"
 
 	"github.com/NSDN/nya-server/models"
+	"github.com/NSDN/nya-server/repositories"
 	"github.com/NSDN/nya-server/utils"
 )
 
 func GetUserInfo(uid string) (*models.User, error) {
-	// FIXME: 从数据库中获取真实的用户信息
-	users := []models.User{
-		{
-			UID:       "1001",
-			Username:  "root",
-			Nickname:  "管理员",
-			UserGroup: "大喵玉",
-			Icon:      "https://i.imgur.com/nNiq3Ph.jpg",
-		},
+	users, err := repositories.GetUserList()
+
+	if err != nil {
+		return nil, err
 	}
 
 	var target *models.User
 
-	for _, user := range users {
+	for _, user := range *users {
 
 		if user.UID == user.UID {
 			target = &user

@@ -21,6 +21,7 @@ func SetupRouter() *gin.Engine {
 
 	registerPlatesRoutes(router)
 	registerAuthorizationRoutes(router)
+	registerTopicRoutes(router)
 
 	return router
 }
