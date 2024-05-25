@@ -74,7 +74,7 @@ func insertManyDataToCollection[T any](
 
 	// 创建上下文
 	c := context.Background()
-	// 插入版块列表
+	// 插入数据
 	result, err := collection.InsertMany(c, payload)
 	return result.InsertedIDs, err
 }

@@ -26,23 +26,20 @@ func InitPlateList() {
 	// 如果没有既存列表，则插入列表
 	newPlates := []models.Plate{
 		{
-			ID:         0,
+			ID:         "localization",
 			Name:       "喵玉汉化馆",
-			RouteName:  "localization",
 			Background: "https://i.imgur.com/ohQuzivl.jpg",
 			PageType:   constants.COMMIC,
 		},
 		{
-			ID:         1,
+			ID:         "music",
 			Name:       "喵玉咏唱组",
-			RouteName:  "music",
 			Background: "https://i.imgur.com/IHo7tTyl.jpg",
 			PageType:   constants.ARTICLE,
 		},
 		{
-			ID:         2,
+			ID:         "chat",
 			Name:       "魔女的茶会",
-			RouteName:  "chat",
 			Background: "https://i.imgur.com/JsWkJ4jl.jpg",
 			PageType:   constants.ARTICLE,
 		},

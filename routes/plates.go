@@ -23,6 +23,6 @@ func registerQueryPlateListRoute(router *gin.Engine) {
 func regitsereQueryArticlesRoute(router *gin.Engine) {
 	// TODO: 等创建文章功能完成后应删除此函数
 	controllers.InitDummyArticles()
-	// 此处的 `:plate` 因在地址中，应使用版块的 `routeName`
+	// 此处的 `:plate` 应为版块的 `id`
 	router.GET("/articles/:plate", controllers.GetArticles)
 }
