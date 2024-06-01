@@ -26,6 +26,23 @@ func GetArticles(context *gin.Context) {
 	context.JSON(http.StatusOK, list)
 }
 
+// 获取帖子楼层列表 - 控制器
+//
+// 从路由上下文中找出路由参数（版块路由名称）传递给服务，
+// 服务会根据路由参数返回不同文章的楼层列表。
+func GetTopicFloors(context *gin.Context) {
+	topic := context.Params.ByName("topic")
+
+	list, err := services.GetTopicFloors(topic)
+
+	if err != nil {
+		utils.HandleRequestError(context, http.StatusInternalServerError, err)
+		return
+	}
+
+	context.JSON(http.StatusOK, list)
+}
+
 // 创建文章 - 控制器
 func CreateArticle(context *gin.Context) {
 	var request models.NewTopicRequestData

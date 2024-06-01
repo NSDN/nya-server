@@ -4,6 +4,7 @@ import (
 	"github.com/NSDN/nya-server/configs"
 	"github.com/NSDN/nya-server/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -47,13 +48,19 @@ func CreateTopicFloors(floors *models.TopicFloors) (*mongo.InsertOneResult, erro
 }
 
 // 获取帖子楼层列表 - 数据库
-func GetTopicFloors(topicID string) (*[]models.TopicFloors, error) {
+func GetTopicFloors(topicID string) (*models.TopicFloors, error) {
 	collection := getTopicFloorsCollection()
 
-	floors, err := findDataFromCollection(
-		&[]models.TopicFloors{},
+	objectID, err := primitive.ObjectIDFromHex(topicID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	floors, err := findOneDataFromCollection(
+		&models.TopicFloors{},
 		collection,
-		bson.D{{Key: "topicID", Value: topicID}},
+		bson.D{{Key: "_id", Value: objectID}},
 	)
 
 	if err != nil {

@@ -102,7 +102,30 @@ func getCollection(collection string) *mongo.Collection {
 		Collection(collection)
 }
 
-// 从数据库的集合中找出数据
+// 从数据库的集合中找出单个数据
+func findOneDataFromCollection[T any](
+	model *T,
+	collection *mongo.Collection,
+	filter interface{},
+) (*T, error) {
+	// 创建上下文
+	c := context.Background()
+
+	if filter == nil {
+		filter = bson.D{}
+	}
+
+	// 获取集合的游标
+	err := collection.FindOne(c, filter).Decode(model)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return model, nil
+}
+
+// 从数据库的集合中找出数据集合
 func findDataFromCollection[T any](
 	model *T,
 	collection *mongo.Collection,

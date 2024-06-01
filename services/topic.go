@@ -3,7 +3,6 @@ package services
 import (
 	"github.com/NSDN/nya-server/models"
 	"github.com/NSDN/nya-server/repositories"
-	"github.com/NSDN/nya-server/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -54,7 +53,6 @@ func CreateTopicFloors(
 		Body:         request.Body,
 	})
 
-	utils.HandlePrintExample("CALLED", floors)
 	return repositories.CreateTopicFloors(&floors)
 }
 
@@ -74,7 +72,7 @@ func GetTopics(plate string) (*[]models.TopicWidthID, error) {
 // 获取帖子列表 - 服务
 //
 // 从数据库中找出所有帖子，然后根据传入的版块路由名来过筛选出当前版块的帖子列表。
-func getTopicFloors(topicID string) (*[]models.TopicFloors, error) {
+func GetTopicFloors(topicID string) (*models.TopicFloors, error) {
 	floors, err := repositories.GetTopicFloors(topicID)
 
 	if err != nil {

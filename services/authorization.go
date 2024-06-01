@@ -187,7 +187,7 @@ func GenerateBase64Salt() (string, error) {
 	return result, nil
 }
 
-// 从数据库中获取用户
+// 使用登入信息从数据库中获取用户
 func GetUserAuthorizateInfo(loginInfo models.LoginInfo) (models.UserAuthorizateInfo, error) {
 	target, err := repositories.GetTargetAuthorizationInfo(loginInfo.Username)
 
