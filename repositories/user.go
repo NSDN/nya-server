@@ -23,14 +23,20 @@ func GetUserCount() (int64, error) {
 // 插入新用户
 func InsertNewUser(newUser *models.UserFullInfo) (bool, error) {
 	collection := getUsersCollection()
-	return insertOneToCollection(collection, newUser)
+	_, err := insertOneToCollection(collection, newUser)
+
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
 // 获取用户列表 - 数据库
 func GetUserList() (*[]models.User, error) {
 	collection := getUsersCollection()
 
-	users, err := findDataFromCollection(&[]models.User{}, collection)
+	users, err := findDataFromCollection(&[]models.User{}, collection, nil)
 
 	if err != nil {
 		return nil, err

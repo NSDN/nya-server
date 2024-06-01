@@ -21,7 +21,7 @@ func InitPlateList(plates *[]models.Plate) ([]interface{}, error) {
 func GetPlateList() (*[]models.Plate, error) {
 	// 从数据库中获取版块列表集合
 	collection := getPlatesCollection()
-	plates, err := findDataFromCollection(&[]models.Plate{}, collection)
+	plates, err := findDataFromCollection(&[]models.Plate{}, collection, nil)
 
 	if err != nil {
 		return nil, err

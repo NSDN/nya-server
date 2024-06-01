@@ -10,6 +10,7 @@ import (
 func registerTopicRoutes(router *gin.Engine) {
 	regitsereQueryArticlesRoute(router)
 	registerCreateArticleRoute(router)
+	registerQueryTopicFloorsRoute(router)
 }
 
 /** 注册请求帖文列表的路由 */
@@ -21,4 +22,10 @@ func regitsereQueryArticlesRoute(router *gin.Engine) {
 /** 注册创建文章帖子的路由 */
 func registerCreateArticleRoute(router *gin.Engine) {
 	router.POST("/article", controllers.CreateArticle)
+}
+
+/** 注册请求帖子楼层列表的路由 */
+func registerQueryTopicFloorsRoute(router *gin.Engine) {
+	// 此处的 `:plate` 应为帖子的 `topicID`
+	router.GET("/floors/:topic", controllers.GetTopicFloors)
 }
