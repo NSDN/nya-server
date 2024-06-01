@@ -28,8 +28,10 @@ const (
 	DB_COLLECTION_USERS = "users"
 	// 版块列表集合
 	DB_COLLECTION_PLATES = "plates"
-	// 帖文列表集合
-	DB_COLLECTION_ARTICLES = "articles"
+	// 帖子列表集合
+	DB_COLLECTION_TOPICS = "topics"
+	// 帖子楼层列表集合
+	DB_COLLECTION_TOPIC_FLOORS = "topicFloors"
 )
 
 // 认证授权

@@ -16,7 +16,7 @@ import (
 func GetArticles(context *gin.Context) {
 	plate := context.Params.ByName("plate")
 
-	list, err := services.GetArticles(plate)
+	list, err := services.GetTopics(plate)
 
 	if err != nil {
 		utils.HandleRequestError(context, http.StatusInternalServerError, err)
@@ -28,8 +28,8 @@ func GetArticles(context *gin.Context) {
 
 // 创建文章 - 控制器
 func CreateArticle(context *gin.Context) {
-	var article models.Article
-	err := context.ShouldBindJSON(&article)
+	var request models.NewTopicRequestData
+	err := context.ShouldBindJSON(&request)
 
 	if err != nil {
 		utils.HandleRequestError(
@@ -40,7 +40,7 @@ func CreateArticle(context *gin.Context) {
 		return
 	}
 
-	succeed, err := services.CreateArticle(&article)
+	succeed, err := services.CreateTopic(&request)
 
 	if err != nil {
 		utils.HandleRequestError(context, http.StatusForbidden, err)

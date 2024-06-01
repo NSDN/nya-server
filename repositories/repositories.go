@@ -80,14 +80,17 @@ func insertManyToCollection[T any](
 }
 
 // 插入单条数据进集合
-func insertOneToCollection[T any](collection *mongo.Collection, data *T) (bool, error) {
-	_, err := collection.InsertOne(context.TODO(), data)
+func insertOneToCollection[T any](
+	collection *mongo.Collection,
+	data *T,
+) (*mongo.InsertOneResult, error) {
+	insertResult, err := collection.InsertOne(context.TODO(), data)
 
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	return true, nil
+	return insertResult, nil
 }
 
 // 从数据库中取出集合
@@ -100,12 +103,20 @@ func getCollection(collection string) *mongo.Collection {
 }
 
 // 从数据库的集合中找出数据
-func findDataFromCollection[T any](model *T, collection *mongo.Collection) (*T, error) {
+func findDataFromCollection[T any](
+	model *T,
+	collection *mongo.Collection,
+	filter interface{},
+) (*T, error) {
 	// 创建上下文
 	c := context.Background()
 
+	if filter == nil {
+		filter = bson.D{}
+	}
+
 	// 获取集合的游标
-	cursor, err := collection.Find(c, bson.D{})
+	cursor, err := collection.Find(c, filter)
 
 	if err != nil {
 		return nil, err
