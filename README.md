@@ -1,89 +1,139 @@
 # 喵玉殿论坛服务端
 
-## 技术栈
+## 开发前需要安装的工具
 
-| 名称                                                                                        | 功能           |
-| ------------------------------------------------------------------------------------------- | -------------- |
-| Golang                                                                                      | 编程语言       |
-| Gin                                                                                         | Web 服务端框架 |
-| GORM                                                                                        | ORM            |
-| PostgreSQL                                                                                  | 数据库         |
-| [golang-migrate/migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate) | 迁移工具       |
-| Docker（可选）                                                                              | 容器化平台     |
+- [Golang]\: 编程语言（自带包管理功能）。
+- [golang-migrate/migrate]\: 数据库迁移工具（可通过 `go install` 的方式安装）。
+- [Docker]（可选）: 容器化平台（用来干净地安装数据库）。
 
-## 设置环境变量文件（重要！）
+二者的版本请见 [go.mod](./go.mod)。
 
-- 希望使用默认环境变量请将示例文件 `.env.*.example` 中的 `example` 去掉
-- 希望自己生成环境变量文件请参考示例文件
-- 根据下文不同的启动方式需要设置不同的环境变量
+## 代码获取方式
 
-## 启动项目（本地有 Golang 环境）
-
-### 下载依赖
-
-```shell
-# 下载依赖
-go mod download
-# 验证依赖
-go mod verify
+```bash
+git clone https://github.com/NSDN/nya-server.git
 ```
 
-创建 `./pgdata` 目录以存放 PostgreSql 的数据。
+## 参与开发请看
 
-### 在 docker 中运行 MongoDB 容器（可选）
+参与开发请务必查看 [CONTRIBUTING.md](./CONTRIBUTING.md) 文件。
 
-- 如果你使用本地安装的 MongoDB 可以不需要这一步
-- 如果你使用本地安装的 MongoDB 记得修改 `.env` 文件中的 `MONGODB_URI`
+## 启动服务端的方式
 
-```shell
-docker compose up --detach
+**\* 所有步骤必须严格按顺序执行。**
+
+### 一、创建环境变量
+
+- 基于所有的 `.env.*.example` 文件创建自己的环境变量文件（注意这是敏感数据请勿使用 Git 管理）。
+- 如果不了解示例文件中的字段的作用，可以仅复制示例文件并删除 `.example` 的部分。
+
+### 二、启动容器以使用数据库
+
+**\* 这一步需要事先安装了 [Docker]。不采用 [Docker] 方式请自行启动数据库并跳过这一步 。**
+
+1. 执行 [Docker] 的可执行文件。
+
+2. 执行 [Docker Compose](./docker-compose.yml) 文件（这一步会自动安装数据库）：
+
+   ```bash
+   docker compose up --detach
+   ```
+
+_其他相关命令：_
+
+- 查看容器的日志：
+
+  ```bash
+  docker compose logs nya-db
+  ```
+
+- 进入容器：
+
+  ```bash
+  docker compose exec -it nya-db bash
+  ```
+
+- 退出并销毁容器：
+
+  ```bash
+  docker compose down
+  ```
+
+### 三、迁移数据库
+
+**\* 这一步需要事先安装了 [golang-migrate/migrate]。**
+
+```bash
+migrate -path database/migrations -database "postgres://{{user}}:{{password}}@localhost:5432/forum?sslmode=disable" up
 ```
 
-## 启动项目（本地无 Golang 环境）
+- `user` 和 `password` 使用定义在 [`.env.postgres`](./.env.postgres.example) 中的值。
+- `host`、`port`、`dbname` 等亦可自定义，但需自行在环境变量文件中增加字段。
 
-- 需要本地环境中有 docker
-- 这个命令会同时在 docker 中创建并运行 Golang 项目容器和 MongoDB 容器
-- 需要更改 `.env` 中的 `MONGODB_URI`
+_其他相关命令：_
+
+- 撤销上一步迁移：
+
+  ```bash
+  migrate -path database/migrations -database "postgres://{{user}}:{{password}}@localhost:5432/forum?sslmode=disable" down
+  ```
+
+- 创建迁移文件：
+
+  ```bash
+  migrate create -dir database/migrations -ext sql -seq {{migration_name}}
+  ```
+
+  - `-ext`: 文件扩展名。
+  - `-seq`: 迁移文件名称。
+
+- 删除迁移文件：
+
+  ```bash
+  rm database/migrations/{{migration_name}}.sql
+  ```
+
+### 四、启动 Golang 程序
+
+\* 这一步需要事先安装了 [Golang]。
+
+1. 初始化依赖：
+
+   ```bash
+   go mod tidy
+   ```
+
+2. 校验依赖：
+
+   ```bash
+   go mod verify
+   ```
+
+3. 启动程序：
+
+   ```bash
+   go run .
+   ```
+
+### 五、验证项目已正常启动
 
 ```shell
-# 启动项目
-docker compose --file docker-comopse.no-local-go.yml up --detach
-
-# 关闭项目
-docker compose --file docker-compose.no-local-go.yml down
-```
-
-### 查看 docker 中的 Golang 项目目录
-
-```shell
-# 进入容器
-# 这个命令会在当前命令行打开一个 bash 进入容器
-docker compose exec forum-backend bash
-
-# 在容器内执行 linux 命令
-ls -la
-```
-
-### 查看 docker 中的 Golagn 项目的运行日志
-
-```shell
-docker compose logs forum-backend
-```
-
-### 运行项目
-
-\* 需要已经启动 MongoDB 了才能正常运行
-
-```shell
-go run .
-```
-
-## 验证项目已正常启动
-
-```shell
-# 返回 pong 则表示启动成功
+# 返回 `pong` 则表示启动成功
 curl -X GET 'http://localhost:10127/ping'
 ```
+
+## 依赖库
+
+版本请查看 [go.mod](./go.mod)。
+
+| 名称                     | 功能                      |
+| ------------------------ | ------------------------- |
+| [Golang]                 | 编程语言                  |
+| [Gin]                    | Web 服务端框架            |
+| [GORM]                   | ORM                       |
+| [PostgreSQL]             | 数据库                    |
+| [golang-migrate/migrate] | [Golang] 的数据库迁移工具 |
+| [Docker]（可选）         | 容器化平台                |
 
 ## 目录结构
 
@@ -141,7 +191,9 @@ curl -X GET 'http://localhost:10127/ping'
 | utils/        | 包含应用程序中的通用工具函数和结构体。 |                                                                                      |
 | .env          | 包含环境变量的定义。                   | 这个文件用于定义应用程序的一些配置信息，例如数据库连接字符串、端口号、认证密钥等等。 |
 
-## 数据库迁移
-
-1. 安装 `migrate`.
-   - 如果用 `go install` 安装，则可执行文件在 `GOPATH` 的 `bin` 目录下。
+[Golang]: https://go.dev/
+[Gin]: https://gin-gonic.com/
+[GORM]: https://gorm.io/
+[PostgreSQL]: https://www.postgresql.org/docs/current/
+[golang-migrate/migrate]: https://github.com/golang-migrate/migrate
+[Docker]: https://www.docker.com/

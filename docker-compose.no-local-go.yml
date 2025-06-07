@@ -12,7 +12,7 @@ services:
     env_file:
       - .env.postgres
     volumes:
-      - ./database/data:/varlib/postgresql/data
+      - ./database/data:/var/lib/postgresql/data
 
   forum-backend:
     build:
