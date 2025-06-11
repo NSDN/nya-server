@@ -5,7 +5,7 @@ type PageType string
 
 const (
 	// 画面类型 - 漫画
-	COMMIC PageType = "commic"
+	COMIC PageType = "comic"
 	// 画面类型 - 文章
 	ARTICLE PageType = "article"
 )
