@@ -29,7 +29,7 @@ func InitPlateList(db *gorm.DB) {
 			ID:         "localization",
 			Name:       "喵玉汉化馆",
 			Background: "https://i.imgur.com/ohQuzivl.jpg",
-			PageType:   constants.COMMIC,
+			PageType:   constants.COMIC,
 		},
 		{
 			ID:         "music",
