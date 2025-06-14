@@ -26,22 +26,28 @@ func InitPlateList(db *gorm.DB) {
 	// 如果没有既存列表，则插入列表
 	newPlates := []models.Plate{
 		{
-			ID:         "localization",
-			Name:       "喵玉汉化馆",
-			Background: "https://i.imgur.com/ohQuzivl.jpg",
-			PageType:   constants.COMIC,
+			ID:          "localization",
+			Name:        "喵玉汉化馆",
+			Description: "",
+			Background:  "https://i.imgur.com/ohQuzivl.jpg",
+			PageType:    constants.COMIC,
+			SortOrder:   0,
 		},
 		{
-			ID:         "music",
-			Name:       "喵玉咏唱组",
-			Background: "https://i.imgur.com/IHo7tTyl.jpg",
-			PageType:   constants.ARTICLE,
+			ID:          "music",
+			Name:        "喵玉咏唱组",
+			Description: "",
+			Background:  "https://i.imgur.com/IHo7tTyl.jpg",
+			PageType:    constants.ARTICLE,
+			SortOrder:   1,
 		},
 		{
-			ID:         "chat",
-			Name:       "魔女的茶会",
-			Background: "https://i.imgur.com/JsWkJ4jl.jpg",
-			PageType:   constants.ARTICLE,
+			ID:          "chat",
+			Name:        "魔女的茶会",
+			Description: "",
+			Background:  "https://i.imgur.com/JsWkJ4jl.jpg",
+			PageType:    constants.ARTICLE,
+			SortOrder:   2,
 		},
 	}
 

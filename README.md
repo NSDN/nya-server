@@ -64,7 +64,8 @@ _其他相关命令：_
 **\* 这一步需要事先安装了 [golang-migrate/migrate]。**
 
 ```bash
-migrate -path database/migrations -database "postgres://{{user}}:{{password}}@localhost:5432/forum?sslmode=disable" up
+# up [N]       Apply all or N up migrations
+migrate -source file://./database/migrations -database "postgres://{{user}}:{{password}}@localhost:5432/forum?sslmode=disable" up
 ```
 
 - `user` 和 `password` 使用定义在 [`.env.postgres`](./.env.postgres.example) 中的值。
@@ -72,10 +73,11 @@ migrate -path database/migrations -database "postgres://{{user}}:{{password}}@lo
 
 _其他相关命令：_
 
-- 撤销上一步迁移：
+- 撤销迁移：
 
   ```bash
-  migrate -path database/migrations -database "postgres://{{user}}:{{password}}@localhost:5432/forum?sslmode=disable" down
+  # down [N] [-all]    Apply all or N down migrations
+  migrate -source file://./database/migrations -database "postgres://{{user}}:{{password}}@localhost:5432/forum?sslmode=disable" down
   ```
 
 - 创建迁移文件：
