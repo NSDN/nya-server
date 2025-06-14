@@ -1,16 +1,22 @@
 package routes
 
 import (
+	"github.com/NSDN/nya-server/context"
 	"github.com/NSDN/nya-server/controllers"
 	"github.com/gin-gonic/gin"
 )
 
 // 注册帖子相关路由。
 // 应当在初始化路由的函数中调用它，并传入一个路由引擎实例的指针。
-func registerTopicRoutes(router *gin.Engine) {
-	regitsereQueryArticlesRoute(router)
-	registerCreateArticleRoute(router)
-	registerQueryTopicFloorsRoute(router)
+func registerTopicRoutes(context *context.AppContext) {
+	registerGetTopics(context)
+	// regitsereQueryArticlesRoute(router)
+	// registerCreateArticleRoute(router)
+	// registerQueryTopicFloorsRoute(router)
+}
+
+func registerGetTopics(context *context.AppContext) {
+	context.APIRouter.GET("/topics", controllers.GetTopics(context))
 }
 
 /** 注册请求帖文列表的路由 */

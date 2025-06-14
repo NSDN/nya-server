@@ -3,15 +3,15 @@ package models
 // 用户一般信息
 type User struct {
 	// 用户编号
-	UID string `json:"uid" bson:"uid"`
+	ID int64 `json:"id" gorm:"column:id;primaryKey"`
 	// 用户名
-	Username string `json:"username" bson:"username"`
+	Username string `json:"username"`
 	// 昵称
-	Nickname string `json:"nickname" bson:"nickname"`
+	Nickname string `json:"nickname"`
 	// 用户组
-	UserGroup string `json:"userGruop" bson:"userGruop"`
+	UserGroup string `json:"userGruop"`
 	// 头像
-	Icon string `json:"icon" bson:"icon"`
+	Icon string `json:"icon"`
 }
 
 // 用户完整信息

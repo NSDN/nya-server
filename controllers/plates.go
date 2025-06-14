@@ -3,25 +3,29 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/NSDN/nya-server/context"
 	"github.com/NSDN/nya-server/services"
 	"github.com/NSDN/nya-server/utils"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 // 创建版块列表 - 控制器
-func InitPlateList(db *gorm.DB) {
-	services.InitPlateList(db)
+func InitPlateList(context *context.AppContext) {
+	plateService := services.NewPlateService(context)
+	plateService.InitPlateList()
 }
 
 // 获取版块列表 - 控制器
-func GetPlateList(context *gin.Context, db *gorm.DB) {
-	list, err := services.GetPlateList(db)
+func GetPlates(appContext *context.AppContext) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		service := services.NewPlateService(appContext)
+		list, err := service.GetPlates()
 
-	if err != nil {
-		utils.HandleRequestError(context, http.StatusInternalServerError, err)
-		return
+		if err != nil {
+			utils.HandleRequestError(context, http.StatusInternalServerError, err)
+			return
+		}
+
+		context.JSON(http.StatusOK, list)
 	}
-
-	context.JSON(http.StatusOK, list)
 }
