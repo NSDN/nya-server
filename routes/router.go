@@ -3,13 +3,13 @@ package routes
 import (
 	"net/http"
 
+	"github.com/NSDN/nya-server/context"
 	"github.com/NSDN/nya-server/middleware"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 // 初始化路由
-func SetupRouter(db *gorm.DB) *gin.Engine {
+func SetupRouter(context *context.AppContext) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(middleware.CORS())
@@ -20,11 +20,11 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 		context.String(http.StatusOK, "pong")
 	})
 
-	apiRouter := router.Group("/api")
+	context.APIRouter = router.Group("/api")
 
-	registerPlatesRoutes(apiRouter, db)
+	registerPlatesRoutes(context)
 	// registerAuthorizationRoutes(router)
-	// registerTopicRoutes(router)
+	registerTopicRoutes(context)
 
 	return router
 }

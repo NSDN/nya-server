@@ -3,6 +3,7 @@ package models
 import (
 	"time"
 
+	"github.com/lib/pq"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -42,7 +43,7 @@ type Topic struct {
 	// 预览图链接
 	ThumbnailLink string `gorm:"not null"`
 	// TAG
-	Tag []string `gorm:"type:varchar(20)[]"`
+	Tag pq.StringArray `gorm:"type:varchar(20)[]"`
 	// 创建时间
 	CreatedAt time.Time `gorm:"not null"`
 	// 更新时间

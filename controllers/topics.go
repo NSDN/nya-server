@@ -4,11 +4,29 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/NSDN/nya-server/context"
 	"github.com/NSDN/nya-server/models"
 	"github.com/NSDN/nya-server/services"
 	"github.com/NSDN/nya-server/utils"
 	"github.com/gin-gonic/gin"
 )
+
+// 获取帖子列表 - 控制器
+func GetTopics(appContext *context.AppContext) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		service := services.NewTopicService(appContext)
+		plateID := context.Query("plateId")
+
+		list, err := service.GetTopics(plateID)
+
+		if err != nil {
+			utils.HandleRequestError(context, http.StatusInternalServerError, err)
+			return
+		}
+
+		context.JSON(http.StatusOK, list)
+	}
+}
 
 // 获取帖文列表 - 控制器
 //
@@ -16,7 +34,7 @@ import (
 func GetArticles(context *gin.Context) {
 	plate := context.Params.ByName("plate")
 
-	list, err := services.GetTopics(plate)
+	list, err := services.GetTopicsOld(plate)
 
 	if err != nil {
 		utils.HandleRequestError(context, http.StatusInternalServerError, err)

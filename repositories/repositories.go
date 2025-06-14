@@ -2,46 +2,13 @@ package repositories
 
 import (
 	"context"
-	"fmt"
-	"log"
 
-	"github.com/NSDN/nya-server/utils"
 	_ "github.com/lib/pq"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 var Client *mongo.Client
-
-// 连接数据库
-//
-// 需要在外部通过 defer 调用返回值以关闭连接
-func SetupDatabase() *gorm.DB {
-	// 从环境变量中获取数据库的连接信息
-	connectString := fmt.Sprintf(
-		"dbname=%s user=%s password=%s sslmode=disable",
-		utils.GetENV("POSTGRES_DB"),
-		utils.GetENV("POSTGRES_USER"),
-		utils.GetENV("POSTGRES_PASSWORD"),
-	)
-
-	db, err := gorm.Open(postgres.Open(connectString), &gorm.Config{})
-
-	if err != nil {
-		log.Fatal("Database open error: ", err)
-	}
-
-	sqlDB, err := db.DB()
-	err = sqlDB.Ping()
-
-	if err != nil {
-		log.Fatal("Ping error: ", err)
-	}
-
-	return db
-}
 
 // 插入单条数据进集合
 func insertOneToCollection[T any](

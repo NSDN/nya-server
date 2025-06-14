@@ -4,15 +4,27 @@ import (
 	"log"
 
 	"github.com/NSDN/nya-server/constants"
+	"github.com/NSDN/nya-server/context"
 	"github.com/NSDN/nya-server/models"
 	"github.com/NSDN/nya-server/repositories"
-	"gorm.io/gorm"
 )
 
+type PlateService struct {
+	context    *context.AppContext
+	repository *repositories.PlateRepository
+}
+
+func NewPlateService(context *context.AppContext) *PlateService {
+	return &PlateService{
+		context:    context,
+		repository: repositories.NewPlateRepository(context),
+	}
+}
+
 // 创建版块列表 - 服务
-func InitPlateList(db *gorm.DB) {
+func (service *PlateService) InitPlateList() {
 	// 从数据库中获取版块列表
-	plates, err := GetPlateList(db)
+	plates, err := service.GetPlates()
 
 	if err != nil {
 		log.Fatal(err)
@@ -51,7 +63,7 @@ func InitPlateList(db *gorm.DB) {
 		},
 	}
 
-	_, err = repositories.InitPlateList(db, newPlates)
+	_, err = service.repository.InitPlateList(newPlates)
 
 	if err != nil {
 		log.Fatal(err)
@@ -59,6 +71,6 @@ func InitPlateList(db *gorm.DB) {
 }
 
 // 获取版块列表 - 服务
-func GetPlateList(db *gorm.DB) ([]models.Plate, error) {
-	return repositories.GetPlateList(db)
+func (service *PlateService) GetPlates() ([]models.Plate, error) {
+	return service.repository.GetPlates()
 }
