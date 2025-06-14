@@ -13,11 +13,10 @@ import (
 // 楼层使用创建帖子信息时由数据库自增生成的 ID 作为唯一键。
 func CreateTopic(request *models.NewTopicRequestData) (bool, error) {
 	topic := models.Topic{
-		Author:       request.Author,
-		Plate:        request.Plate,
-		Title:        request.Title,
-		Tag:          request.Tag,
-		CreationDate: request.CreationDate,
+		Author:  request.Author,
+		PlateID: request.Plate,
+		Title:   request.Title,
+		Tag:     request.Tag,
 	}
 
 	insertResult, err := repositories.CreateTopic(&topic)

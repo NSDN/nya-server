@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS plates(
-  id VARCHAR (100) PRIMARY KEY,
-  name VARCHAR (100) NOT NULL,
+  id VARCHAR(100) PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
   description TEXT NOT NULL,
   background TEXT NOT NULL,
-  page_type VARCHAR (20) NOT NULL,
+  page_type VARCHAR(20) NOT NULL,
   sort_order SMALLINT UNIQUE NOT NULL CHECK (sort_order >= 0)
 );
 
