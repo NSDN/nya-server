@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS topics(
   id BIGSERIAL PRIMARY KEY,
-  author_id BIGINT NOT NULL REFERENCES users(id),
+  author_id UUID NOT NULL REFERENCES users(uid),
   plate_id VARCHAR(100) NOT NULL REFERENCES plates(id),
   title TEXT NOT NULL,
   topic_type VARCHAR(20) NOT NULL CHECK (topic_type IN ('comic', 'article')),
@@ -21,7 +21,7 @@ INSERT INTO topics (
   updated_at
 ) VALUES
   (
-    1,
+    (SELECT uid FROM users WHERE username = 'reimu'),
     'chat',
     '青年在选择职业时的考虑',
     'article',
@@ -31,7 +31,7 @@ INSERT INTO topics (
     CURRENT_TIMESTAMP
   ),
   (
-    1, 
+    (SELECT uid FROM users WHERE username = 'reimu'),
     'chat', 
     '德意志意识形态', 
     'article',
@@ -41,7 +41,7 @@ INSERT INTO topics (
     CURRENT_TIMESTAMP
   ),
   (
-    1, 
+    (SELECT uid FROM users WHERE username = 'reimu'),
     'chat', 
     '共产党宣言', 
     'article',

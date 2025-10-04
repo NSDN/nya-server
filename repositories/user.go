@@ -1,8 +1,20 @@
 package repositories
 
 import (
+	"github.com/NSDN/nya-server/context"
 	"github.com/NSDN/nya-server/models"
+	"gorm.io/gorm"
 )
+
+type UserRepository struct {
+	context *context.AppContext
+}
+
+func NewUserRepository(
+	context *context.AppContext,
+) *UserRepository {
+	return &UserRepository{context}
+}
 
 // 从数据库中获取用户列表集合
 // func getUsersCollection() *mongo.Collection {
@@ -18,16 +30,21 @@ func GetUserCount() (int64, error) {
 }
 
 // 插入新用户
-func InsertNewUser(newUser *models.UserFullInfo) (bool, error) {
-	// collection := getUsersCollection()
-	// _, err := insertOneToCollection(collection, newUser)
+func (repository *UserRepository) InsertUser(user *models.User) (bool, error) {
+	err := gorm.
+		G[*models.User](repository.context.DB).
+		Create(repository.context.DBContext, &user)
 
-	// if err != nil {
-	// 	return false, err
-	// }
+	return err == nil, err
+}
 
-	// return true, nil
-	return false, nil
+func (repository *UserRepository) GetUser(
+	username string,
+) (*models.User, error) {
+	return gorm.
+		G[*models.User](repository.context.DB).
+		Where("username = ?", username).
+		Take(repository.context.DBContext)
 }
 
 // 获取用户列表 - 数据库

@@ -8,9 +8,9 @@ const (
 // API
 const (
 	// 注册 API
-	API_REGISTER = "/register"
+	API_REGISTER = "/authorization/register"
 	// 登入 API
-	API_LOGIN = "/login"
+	API_LOGIN = "/authorization/login"
 	// 获取用户信息 API
 	API_GET_USER_INFO = "/user"
 )

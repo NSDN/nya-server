@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/NSDN/nya-server/configs"
+	"github.com/NSDN/nya-server/context"
 	"github.com/NSDN/nya-server/models"
 	"github.com/NSDN/nya-server/services"
 	"github.com/NSDN/nya-server/utils"
@@ -12,8 +13,22 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+type AuthorizationController struct {
+	context *context.AppContext
+	service *services.AuthorizationService
+}
+
+func NewAuthorizationController(
+	context *context.AppContext,
+) *AuthorizationController {
+	return &AuthorizationController{
+		context,
+		services.NewAuthorizationService(context),
+	}
+}
+
 // 注册 - 控制器
-func Register(context *gin.Context) {
+func (controller *AuthorizationController) Register(context *gin.Context) {
 	var info models.RegisterInfo
 
 	// 从请求体中获取注册信息
@@ -57,18 +72,18 @@ func Register(context *gin.Context) {
 	}
 
 	// 调用注册服务
-	succeed, err := services.Register(&info)
+	success, err := controller.service.Register(&info)
 
 	if err != nil {
 		utils.HandleRequestError(context, http.StatusForbidden, err)
 		return
 	}
 
-	context.JSON(http.StatusOK, succeed)
+	context.JSON(http.StatusOK, success)
 }
 
 // 登入 - 控制器
-func Login(context *gin.Context) {
+func (controller *AuthorizationController) Login(context *gin.Context) {
 	var info models.LoginInfo
 
 	// 绑定登入信息
@@ -104,7 +119,7 @@ func Login(context *gin.Context) {
 	}
 
 	// 调用登入服务
-	token, err := services.Login(info)
+	token, err := controller.service.Login(info)
 
 	if err != nil {
 		utils.HandleRequestError(context, http.StatusForbidden, err)
@@ -117,7 +132,7 @@ func Login(context *gin.Context) {
 }
 
 // 获取用户信息 - 控制器
-func GetUserInfo(context *gin.Context) {
+func (controller *AuthorizationController) GetUserInfo(context *gin.Context) {
 	claims, exist := context.Get(configs.CONTEXT_KEY_CLAIMS)
 
 	if !exist {

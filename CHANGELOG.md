@@ -14,6 +14,7 @@
 - 重构版块整体 API。
 - 重构帖子表定义从 MongoDB 至 PostgreSQL。
 - 重构获取帖子列表 API。
+- 重构注册 API。
 
 [Unreleased]: https://github.com/NSDN/nya-client/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/NSDN/nya-client/release/tag/v1.0.0

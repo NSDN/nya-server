@@ -23,7 +23,7 @@ func SetupRouter(context *context.AppContext) *gin.Engine {
 	context.APIRouter = router.Group("/api")
 
 	registerPlatesRoutes(context)
-	// registerAuthorizationRoutes(router)
+	registerAuthorizationRoutes(context)
 	registerTopicRoutes(context)
 
 	return router

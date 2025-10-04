@@ -7,14 +7,14 @@ import (
 	"github.com/NSDN/nya-server/utils"
 )
 
-func GetUserInfo(uid string) (*models.User, error) {
+func GetUserInfo(uid string) (*models.UserPublicInfo, error) {
 	// users, err := repositories.GetUserList()
 
 	// if err != nil {
 	// 	return nil, err
 	// }
 
-	var target *models.User
+	var target *models.UserPublicInfo
 
 	// for _, user := range *users {
 	//

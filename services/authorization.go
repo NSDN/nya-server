@@ -5,10 +5,10 @@ import (
 	"encoding/base64"
 	"errors"
 	"log"
-	"strconv"
 	"time"
 
 	"github.com/NSDN/nya-server/configs"
+	"github.com/NSDN/nya-server/context"
 	"github.com/NSDN/nya-server/models"
 	"github.com/NSDN/nya-server/repositories"
 	"github.com/NSDN/nya-server/utils"
@@ -16,9 +16,23 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type AuthorizationService struct {
+	context        *context.AppContext
+	userRepository *repositories.UserRepository
+}
+
+func NewAuthorizationService(context *context.AppContext) *AuthorizationService {
+	return &AuthorizationService{
+		context,
+		repositories.NewUserRepository(context),
+	}
+}
+
 // 使用前端传入的注册信息注册。
-func Register(info *models.RegisterInfo) (bool, error) {
-	_, err := GetUserAuthorizateInfo(models.LoginInfo{
+func (service *AuthorizationService) Register(
+	info *models.RegisterInfo,
+) (bool, error) {
+	_, err := service.getUserAuthorizateInfo(models.LoginInfo{
 		Username: info.Username,
 	})
 
@@ -31,23 +45,16 @@ func Register(info *models.RegisterInfo) (bool, error) {
 	noTarget := err.Error() == utils.Messages.AUTHORIZE_FAILED_NO_USER
 
 	if noTarget {
-		return createNewUser(info)
+		return service.createNewUser(info)
 	}
 
 	return false, err
 }
 
 // 创建新用户
-func createNewUser(info *models.RegisterInfo) (bool, error) {
-	// 基于用户数决定新用户的 UID
-	count, err := repositories.GetUserCount()
-
-	if err != nil {
-		return false, err
-	}
-
+func (service *AuthorizationService) createNewUser(info *models.RegisterInfo) (bool, error) {
 	// 生成用户特定的随机盐值
-	salt, err := GenerateBase64Salt()
+	salt, err := generateBase64Salt()
 
 	if err != nil {
 		return false, err
@@ -60,29 +67,31 @@ func createNewUser(info *models.RegisterInfo) (bool, error) {
 		return false, err
 	}
 
-	newUser := models.UserFullInfo{
-		UID:      strconv.FormatInt(count+1, 10),
-		Username: info.Username,
-		Password: encryptedPassword,
-		Salt:     salt,
+	user := models.User{
+		Username:  info.Username,
+		Password:  encryptedPassword,
+		Salt:      salt,
+		Nickname:  info.Username,
+		Icon:      "https://i.imgur.com/SH1uR3f.png",
+		UserGroup: "一面の毛玉",
 	}
 
-	succeed, err := repositories.InsertNewUser(&newUser)
-
-	return succeed, err
+	return service.userRepository.InsertUser(&user)
 }
 
 // 使用前端传入的登入信息登入。
 // 通过比对登入信息中的密码与数据库中的密码是否一致来判断是否登入成功。
 // 成功时返回令牌。
-func Login(info models.LoginInfo) (token string, err error) {
-	user, err := GetUserAuthorizateInfo(info)
+func (service *AuthorizationService) Login(
+	info models.LoginInfo,
+) (token string, err error) {
+	user, err := service.getUserAuthorizateInfo(info)
 
 	if err != nil {
 		return "", err
 	}
 
-	err = ComparePassword(info.Password, user.Password, user.Salt)
+	err = comparePassword(info.Password, user.Password, user.Salt)
 
 	if err != nil {
 		return "", err
@@ -138,7 +147,7 @@ func encryptPassword[Salt []byte | string](
 
 // 比对密码。
 // 将传入的密码同数据库中的盐值进行哈希化，与数据库中的哈希化后的密码及盐值进行比对。
-func ComparePassword(password string, base64Hashed string, base64Salt string) error {
+func comparePassword(password string, base64Hashed string, base64Salt string) error {
 	// 解码密码
 	hashed, err := base64.StdEncoding.DecodeString(base64Hashed)
 
@@ -171,7 +180,7 @@ func ComparePassword(password string, base64Hashed string, base64Salt string) er
 }
 
 // 生成盐值
-func GenerateBase64Salt() (string, error) {
+func generateBase64Salt() (string, error) {
 	salt := make([]byte, configs.SALT_LENGTH)
 
 	// 填充随机字节
@@ -188,8 +197,12 @@ func GenerateBase64Salt() (string, error) {
 }
 
 // 使用登入信息从数据库中获取用户
-func GetUserAuthorizateInfo(loginInfo models.LoginInfo) (models.UserAuthorizateInfo, error) {
-	target, err := repositories.GetTargetAuthorizationInfo(loginInfo.Username)
+func (service *AuthorizationService) getUserAuthorizateInfo(
+	loginInfo models.LoginInfo,
+) (*models.User, error) {
+	target, err := service.userRepository.GetUser(
+		loginInfo.Username,
+	)
 
 	if err != nil {
 		return target, errors.New(utils.Messages.AUTHORIZE_FAILED_NO_USER)

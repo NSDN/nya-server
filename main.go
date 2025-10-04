@@ -1,11 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 
 	"github.com/NSDN/nya-server/configs"
-	"github.com/NSDN/nya-server/context"
+	appContext "github.com/NSDN/nya-server/context"
 	"github.com/NSDN/nya-server/routes"
 	"github.com/NSDN/nya-server/utils"
 	"github.com/joho/godotenv"
@@ -57,12 +58,10 @@ func initDatabase() *gorm.DB {
 }
 
 func main() {
-	// 连接数据库
-	// 使用 GORM 时不需要使用 `defer` 手动关闭数据库
-	db := initDatabase()
-
-	appContext := &context.AppContext{
-		DB: db,
+	appContext := &appContext.AppContext{
+		// 使用 GORM 时不需要使用 `defer` 手动关闭数据库
+		DB:        initDatabase(),
+		DBContext: context.Background(),
 	}
 
 	// 初始化路由

@@ -9,7 +9,7 @@ import (
 
 type NewTopicRequestData struct {
 	// 作者
-	Author User `json:"author" bson:"author"`
+	Author UserPublicInfo `json:"author" bson:"author"`
 	// 版块（版块 ID）
 	Plate string `json:"plate" bson:"plate"`
 	// 标题
@@ -31,7 +31,7 @@ type Topic struct {
 	// 作者 ID（User 外键：即不是 Topic 自身的属性，为了关联 User 而存在。）
 	AuthorID int64 `gorm:"not null"`
 	// 作者实例（GORM 预加载用，如果外键引用的 User 中的属性不是 `ID`，需要使用 `references` 手动指定。）
-	Author User `gorm:"foreignKey:AuthorID;"`
+	Author UserPublicInfo `gorm:"foreignKey:AuthorID;"`
 	// 版块（版块ID）
 	PlateID string `gorm:"not null"`
 	// 版块实例
@@ -54,7 +54,7 @@ type TopicWidthID struct {
 	// 帖文ID（由数据库自增生成）
 	TopicID primitive.ObjectID `json:"topicID" bson:"_id"`
 	// 作者
-	Author User `json:"author" bson:"author"`
+	Author UserPublicInfo `json:"author" bson:"author"`
 	// 版块（版块ID）
 	Plate string `json:"plate" bson:"plate"`
 	// 标题
@@ -76,7 +76,7 @@ type FloorItem struct {
 	// 层数
 	Level int `json:"level" bson:"level"`
 	// 作者
-	Author User `json:"author" bson:"author"`
+	Author UserPublicInfo `json:"author" bson:"author"`
 	// 创建日
 	CreationDate time.Time `json:"creationDate" bson:"creationDate"`
 	// 回帖文章类型
